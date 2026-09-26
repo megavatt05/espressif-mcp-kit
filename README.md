@@ -13,6 +13,7 @@
 |---|---|
 | `mcp_client.py` | Универсальный MCP-клиент: один файл, ноль зависимостей (Python 3 stdlib). Команды `info`, `list`, `call`, `search`; опции `--url`, `--token` |
 | `servers.json` | Реестр серверов: адреса, статусы, полный список инструментов, OAuth-эндпоинты, подсказки для агента |
+| `kapa_login_helper.py` | Двухшаговый OAuth-вход на kapa.ai (LVGL) через Google/GitHub из чата без браузера |
 | `restore_prompt.md` | Готовый текст для вставки в новый чат — агент сам всё развернёт |
 | `oauth_flow_probe.py` | Диагностика OAuth: проверяет авторегистрацию клиента и автоодобрение авторизации |
 | `docs/espressif_mcp_servers.md` | Подробный отчёт о проверке серверов от 2026-09-27 |
@@ -43,9 +44,27 @@ python3 mcp_client.py --url https://mcp.espressif.com/docs --token eyJ... list
 |---|---|---|---|
 | Components Registry | `https://components.espressif.com/mcp` | ✅ работает | не нужна |
 | ESP-Pilot | `https://mcp.esp-pilot.espressif.com/mcp` | ✅ работает | не нужна |
+| LVGL (kapa.ai) | `https://lvgl.mcp.kapa.ai/` | ✅ работает | Google/GitHub OAuth — готов помощник `kapa_login_helper.py` |
 | Technical Support | `https://ts-mcp.espressif.com/mcp` | 🔑 нужен токен | аккаунт Espressif (OAuth, браузер) |
 | RainMaker | `https://mcp.rainmaker.espressif.com/api/mcp` | 🔑 нужен токен | аккаунт RainMaker (Cognito) |
 | Documentation | `https://mcp.espressif.com/docs` | 🔑 нужен токен | GitHub или WeChat |
+
+## Вход через Google на kapa.ai (LVGL) — как это работает
+
+У kapa.ai обычный OAuth, но с особенностью: параметр **`resource`** (RFC 8707)
+обязателен и в `/authorize`, и в `/token` — без него сервер отдаёт `server_error`
+(подтверждено сотрудником kapa в `openai/codex#11292`). Помощник делает всё сам:
+
+```bash
+python3 kapa_login_helper.py start --reuse   # 1) ссылка для браузера
+# пользователь: открывает ссылку, входит через Google, копирует адрес
+#   http://localhost:1455/callback?code=... из адресной строки
+python3 kapa_login_helper.py finish '<вставленный-адрес>'   # 2) токен получен
+python3 mcp_client.py --url https://lvgl.mcp.kapa.ai/ --token "$(head -1 kapa_token.txt)" info
+```
+
+Токен и PKCE-состояние сохраняются в `kapa_token.txt` / `kapa_oauth_state.json` —
+оба в `.gitignore`, в репозиторий не попадают.
 
 Важные детали OAuth (полностью — в `servers.json`):
 - все три закрытых сервера поддерживают **только** grant `authorization_code` (+ refresh_token),

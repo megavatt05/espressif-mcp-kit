@@ -49,6 +49,34 @@
       "notes": "Работает без токена. Полезен для подбора плат, скиллов и мультимедиа-примеров."
     },
     {
+      "id": "lvgl",
+      "name": "LVGL MCP (kapa.ai)",
+      "url": "https://lvgl.mcp.kapa.ai/",
+      "auth": "oauth2-bearer-required",
+      "status": "WORKS_WITH_TOKEN",
+      "http_without_token": 401,
+      "server_info_from_init": {"name": "LVGL MCP", "version": "0.1.0"},
+      "tools": [
+        {"name": "search_lvgl_light_and_versatile_graphics_library_knowledge_sources", "args": {"query": "вопрос по LVGL"}, "purpose": "семантический поиск по официальной документации, форуму и исходникам LVGL; ответы со ссылками на источники"}
+      ],
+      "oauth": {
+        "discovery_protected_resource": "https://lvgl.mcp.kapa.ai/.well-known/oauth-protected-resource",
+        "discovery_authorization_server": "https://mcp.kapa.ai/.well-known/oauth-authorization-server/auth/public",
+        "authorization_endpoint": "https://mcp.kapa.ai/auth/public/authorize",
+        "token_endpoint": "https://mcp.kapa.ai/auth/public/token",
+        "registration_endpoint": "https://mcp.kapa.ai/auth/public/register",
+        "grant_types": ["authorization_code", "refresh_token"],
+        "pkce": "S256",
+        "scopes": ["openid"],
+        "dynamic_registration": "РАБОТАЕТ анонимно (client_id + client_secret выдаются)",
+        "login": "Google или GitHub (страница Choose Sign In Provider)",
+        "ВАЖНО_rfc8707": "Параметр resource ОБЯЗАТЕЛЕН и в /authorize, и в /token: resource=https://lvgl.mcp.kapa.ai/ (со слэшем). Без него kapa возвращает error=server_error. Подтверждено сотрудником kapa в github.com/openai/codex#11292",
+        "automated_flow": "python3 kapa_login_helper.py start [--reuse] -> пользователь входит в браузере -> вставляет адрес localhost-callback -> python3 kapa_login_helper.py finish '<адрес>'"
+      },
+      "notes": "Read-only сервер документации LVGL. Токен (JWT ~359 симв.) + refresh_token сохраняются в kapa_token.txt (в .gitignore). Проверено: запрос про MIPI-DSI/ESP32-P4 вернул раздел про DMA2D/PPA и CONFIG_BSP_DISPLAY_LVGL_AVOID_TEAR. Смежный открытый ресурс: github.com/lvgl/lvgl_pro (XML-схемы виджетов, примеры) — без авторизации.",
+      "connected_at": "2026-09-27"
+    },
+    {
       "id": "tech-support",
       "name": "Espressif Technical Support MCP",
       "url": "https://ts-mcp.espressif.com/mcp",

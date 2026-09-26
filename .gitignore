@@ -1,0 +1,3 @@
+# Секреты OAuth — НИКОГДА не коммитить!
+kapa_token.txt
+kapa_oauth_state.json

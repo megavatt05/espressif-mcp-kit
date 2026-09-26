@@ -23,11 +23,19 @@ https://github.com/megavatt05/espressif-mcp-kit — сделай так:
    Команды клиента: info (сводка), list (полный JSON инструментов),
    call <tool> '<json-args>' (вызов), search '<запрос>' (автопоиск).
 
-4. Серверы со status=TOKEN_REQUIRED (ts-mcp техподдержка, rainmaker, docs) требуют
-   OAuth-токен: спроси у меня bearer-токен, если он мне нужен, и вызывай их так:
+4. Серверы с авторизацией требуют OAuth-токен: спроси у меня bearer-токен, если он
+   мне нужен, и вызывай их так:
    python3 mcp_client.py --url <адрес> --token <JWT> info
-   При HTTP 401 — токен просрочен, запроси новый. Без токена эти серверы не открываются:
-   grant только authorization_code (вход в браузере), автоматизации нет.
+   При HTTP 401 — токен отсутствует/просрочен; попроси новый. Без токена эти серверы
+   не открываются: grant только authorization_code (вход в браузере), автоматизации нет.
+   ОСОБОЕ: сервер LVGL (https://lvgl.mcp.kapa.ai/, вход Google/GitHub) подключается
+   через готовый помощник kapa_login_helper.py из этого же репозитория:
+     python3 kapa_login_helper.py start --reuse      # выдаст ссылку — отдай мне
+     (я войду через Google и вставлю сюда адрес http://localhost:1455/callback?code=...)
+     python3 kapa_login_helper.py finish '<вставленный адрес>'   # получит токен
+   КРИТИЧНО для kapa.ai: в /authorize и /token обязателен параметр resource
+   (RFC 8707) = https://lvgl.mcp.kapa.ai/ — без него server_error. Помощник
+   это уже учитывает. Токен живёт в kapa_token.txt (в .gitignore).
 
 5. Для вызовов инструментов используй списки из servers.json (там схемы аргументов).
    Реестр компонентов: search_components(query), fetch_component_detailed_information

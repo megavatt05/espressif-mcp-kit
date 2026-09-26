@@ -265,4 +265,9 @@ def run():
 
 
 if __name__ == "__main__":
-    main()
+    # BrokenPipeError возникает, если вывод пайпят в head/less и тот закрывает
+    # канал раньше времени — это нормальная ситуация, не падаем с трейсбеком
+    try:
+        main()
+    except BrokenPipeError:
+        sys.exit(0)

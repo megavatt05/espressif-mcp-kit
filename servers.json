@@ -1,0 +1,128 @@
+{
+  "_comment": "Реестр MCP-серверов Espressif. Файл — часть комплекта espressif-mcp-kit. AI-агент: прочитай этот файл, чтобы восстановить подключения. Клиент — mcp_client.py рядом.",
+  "version": "1.0.0",
+  "generated": "2026-09-27",
+  "protocol": "MCP Streamable HTTP (JSON-RPC 2.0 поверх POST)",
+  "client_usage": {
+    "commands": ["info", "list", "call <tool> '<json-args>'", "search '<запрос>'"],
+    "options": ["--url <адрес сервера>", "--token <OAuth-JWT> (или env MCP_TOKEN)"],
+    "examples": [
+      "python3 mcp_client.py info",
+      "python3 mcp_client.py --url https://mcp.esp-pilot.espressif.com/mcp call server_info '{}'",
+      "python3 mcp_client.py search jd9165"
+    ]
+  },
+  "servers": [
+    {
+      "id": "components-registry",
+      "name": "Espressif Components Registry",
+      "url": "https://components.espressif.com/mcp",
+      "auth": "none",
+      "status": "WORKS",
+      "server_info": {"name": "Espressif Components MCP", "version": "3.4.7", "protocol": "2025-03-26", "session": "выдаёт Mcp-Session-Id"},
+      "tools": [
+        {"name": "search_components", "args": {"query": "строка поиска"}, "purpose": "поиск компонентов в реестре (пример: jd9165, esp_hosted, esp-brookesia)"},
+        {"name": "fetch_component_detailed_information", "args": {"namespace": "espressif", "component": "esp_lcd_jd9165"}, "purpose": "полная карточка компонента: версии, зависимости, README"}
+      ],
+      "notes": "Основной источник версий компонентов и их совместимости с IDF. Проверено на проекте ESP32P4-JC1060P470C-I_W_Y (esp_lcd_jd9165 v2.0.2, esp_hosted 2.12.13)."
+    },
+    {
+      "id": "esp-pilot",
+      "name": "ESP-Pilot MCP",
+      "url": "https://mcp.esp-pilot.espressif.com/mcp",
+      "auth": "none",
+      "status": "WORKS",
+      "server_info": {"name": "esp-pilot-mcp", "version": "0.5.0", "protocol": "2025-03-26", "session": "stateless — Mcp-Session-Id не выдаёт"},
+      "tools": [
+        {"name": "catalog_list_bmgr_devices", "args": {"chip": "esp32p4", "idf_version": "опц.", "device_type": "опц.", "limit": "опц."}, "purpose": "устройства из каталога ESP Board Manager"},
+        {"name": "catalog_list_bmgr_peripherals", "args": {"chip": "опц.", "peripheral_type": "опц.", "peripheral_role": "опц.", "peripheral_format": "опц."}, "purpose": "периферия BMGR"},
+        {"name": "catalog_list_bmgr_boards", "args": {"chip": "esp32p4", "limit": "опц."}, "purpose": "платы BMGR; проверено: esp32_p4_eye, esp32_p4_function_ev_board"},
+        {"name": "catalog_list_socs", "args": {}, "purpose": "каталог возможностей SoC"},
+        {"name": "catalog_get_bmgr_doc", "args": {}, "purpose": "документ BMGR по плате"},
+        {"name": "catalog_list_skills", "args": {}, "purpose": "AI-скиллы Espressif (ресурсы, agents)"},
+        {"name": "catalog_get_skill", "args": {}, "purpose": "получить AI-скилл"},
+        {"name": "catalog_list_adf_gmf_capabilities", "args": {}, "purpose": "возможности ADF/GMF (мультимедиа)"},
+        {"name": "catalog_get_adf_gmf_capability", "args": {"name": "точное имя"}, "purpose": "одна возможность ADF/GMF"},
+        {"name": "catalog_list_adf_gmf_scenarios", "args": {}, "purpose": "примеры ADF (имя, категория, github_url)"},
+        {"name": "server_info", "args": {}, "purpose": "метаданные каталога; источники: esp-board-manager, esp-gmf f654a316, esp-adf-internal 2a1552b4e"}
+      ],
+      "notes": "Работает без токена. Полезен для подбора плат, скиллов и мультимедиа-примеров."
+    },
+    {
+      "id": "tech-support",
+      "name": "Espressif Technical Support MCP",
+      "url": "https://ts-mcp.espressif.com/mcp",
+      "auth": "oauth2-bearer-required",
+      "status": "TOKEN_REQUIRED",
+      "http_without_token": 401,
+      "oauth": {
+        "discovery_authorization_server": "https://ts-mcp.espressif.com/.well-known/oauth-authorization-server",
+        "authorization_endpoint": "https://ts-mcp.espressif.com/authorize",
+        "token_endpoint": "https://ts-mcp.espressif.com/token",
+        "registration_endpoint": "https://ts-mcp.espressif.com/register",
+        "grant_types": ["authorization_code", "refresh_token"],
+        "pkce": "S256",
+        "dynamic_registration": "ОТКЛОНЯЕТ произвольные redirect_uri (invalid_redirect_uri) — регистрация только для одобренных клиентов",
+        "login": "аккаунт Espressif (вход в браузере)"
+      },
+      "tools": "неизвестны до авторизации",
+      "notes": "Только authorization_code: автоматический вход невозможен. Варианты: (1) bearer-токен от пользователя, полученный в его MCP-клиенте; (2) браузерный MCP-клиент (Claude Desktop/Cursor/VS Code)."
+    },
+    {
+      "id": "rainmaker",
+      "name": "ESP RainMaker MCP Server",
+      "url": "https://mcp.rainmaker.espressif.com/api/mcp",
+      "auth": "oauth2-bearer-required",
+      "status": "TOKEN_REQUIRED",
+      "http_without_token": 401,
+      "server_info_from_401": {"name": "ESP RainMaker MCP Server", "version": "1.0.0", "mcp_version": "2025-06-18"},
+      "oauth": {
+        "discovery_protected_resource": "https://mcp.rainmaker.espressif.com/.well-known/oauth-protected-resource",
+        "discovery_authorization_server": "https://mcp.rainmaker.espressif.com/.well-known/oauth-authorization-server",
+        "authorization_endpoint": "https://mcp.rainmaker.espressif.com/oauth2/authorize",
+        "token_endpoint": "https://mcp.rainmaker.espressif.com/oauth2/token",
+        "registration_endpoint": "https://mcp.rainmaker.espressif.com/oauth/register",
+        "jwks_uri": "https://cognito-idp.us-east-1.amazonaws.com/us-east-1_L9u4S0N1i/.well-known/jwks.json",
+        "grant_types": ["authorization_code", "refresh_token"],
+        "pkce": "S256",
+        "scopes": ["openid", "email", "phone", "aws.cognito.signin.user.admin"],
+        "login": "аккаунт ESP RainMaker (Cognito), вход в браузере",
+        "reauthenticate": "GET https://mcp.rainmaker.espressif.com/api/mcp/reauthenticate"
+      },
+      "tools": "неизвестны до авторизации",
+      "notes": "Только authorization_code: автоматический вход невозможен. Облачный IoT-сервис RainMaker: устройства, деплой, мониторинг."
+    },
+    {
+      "id": "docs",
+      "name": "Espressif Documentation MCP",
+      "url": "https://mcp.espressif.com/docs",
+      "auth": "oauth2-bearer-required",
+      "status": "TOKEN_REQUIRED",
+      "http_without_token": 401,
+      "oauth": {
+        "discovery_protected_resource": "https://mcp.espressif.com/.well-known/oauth-protected-resource/docs",
+        "discovery_authorization_server": "https://mcp.espressif.com/.well-known/oauth-authorization-server/docs",
+        "authorization_endpoint": "https://mcp.espressif.com/docs/authorize",
+        "token_endpoint": "https://mcp.espressif.com/docs/token",
+        "registration_endpoint": "https://mcp.espressif.com/docs/register",
+        "grant_types": ["authorization_code", "refresh_token"],
+        "pkce": "S256",
+        "scopes": ["read:user"],
+        "dynamic_registration": "РАБОТАЕТ анонимно — client_id выдаётся (проверено 2026-09-27), но /authorize показывает страницу входа",
+        "login": "GitHub или WeChat (вход в браузере)"
+      },
+      "tools": "неизвестны до авторизации",
+      "notes": "Единственный из закрытых, где динамическая регистрация клиента проходит; дальше всё равно нужен человек у браузера."
+    }
+  ],
+  "recovery_hints": {
+    "for_ai_agent": [
+      "1. Скачай mcp_client.py из этого репозитория (raw.githubusercontent.com/megavatt05/espressif-mcp-kit/main/mcp_client.py)",
+      "2. Проверь доступные серверы: python3 mcp_client.py --url <url> info (см. поле url у серверов со status=WORKS)",
+      "3. Для status=TOKEN_REQUIRED запроси у пользователя bearer-токен и вызывай с --token",
+      "4. При HTTP 401 — токен отсутствует/просрочен; попроси новый (клиент сам подскажет)",
+      "5. Результаты tools/call приходят в result.content[{type:text}]; SSE-ответы парсятся автоматически"
+    ],
+    "known_secret_sources": "токены НИКОГДА не хранятся в этом репозитории; пользователь передаёт их в момент работы"
+  }
+}

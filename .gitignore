@@ -1,3 +1,5 @@
 # Секреты OAuth — НИКОГДА не коммитить!
 kapa_token.txt
 kapa_oauth_state.json
+espressif_token_*.txt
+espressif_oauth_state_*.json

@@ -1,0 +1,90 @@
+{
+  "screen": {
+    "name": "Промышленный намоточный станок ПОН (1024x600)",
+    "width": 1024,
+    "height": 550,
+    "safe_margin": 6
+  },
+  "elements": [
+    {
+      "name": "card_left_meter",
+      "x": 10,
+      "y": 8,
+      "width": 520,
+      "height": 264,
+      "interactive": false
+    },
+    {
+      "name": "card_right_preset",
+      "x": 536,
+      "y": 8,
+      "width": 478,
+      "height": 130,
+      "interactive": false
+    },
+    {
+      "name": "card_right_bobbin",
+      "x": 536,
+      "y": 142,
+      "width": 478,
+      "height": 130,
+      "interactive": false
+    },
+    {
+      "name": "card_progress_bar",
+      "x": 10,
+      "y": 278,
+      "width": 1004,
+      "height": 76,
+      "interactive": false
+    },
+    {
+      "name": "card_telemetry_grid",
+      "x": 10,
+      "y": 360,
+      "width": 1004,
+      "height": 98,
+      "interactive": false
+    },
+    {
+      "name": "btn_start",
+      "x": 10,
+      "y": 464,
+      "width": 190,
+      "height": 74,
+      "interactive": true
+    },
+    {
+      "name": "btn_pause",
+      "x": 208,
+      "y": 464,
+      "width": 150,
+      "height": 74,
+      "interactive": true
+    },
+    {
+      "name": "btn_stop",
+      "x": 366,
+      "y": 464,
+      "width": 150,
+      "height": 74,
+      "interactive": true
+    },
+    {
+      "name": "btn_jog",
+      "x": 524,
+      "y": 464,
+      "width": 150,
+      "height": 74,
+      "interactive": true
+    },
+    {
+      "name": "btn_reset",
+      "x": 864,
+      "y": 464,
+      "width": 150,
+      "height": 74,
+      "interactive": true
+    }
+  ]
+}
